@@ -1,0 +1,10 @@
+<?php
+// $Id: image_select_captcha.install,v 0.1 2012/2/22 15:24:31 markusa Exp $
+
+/**
+ * On uninstall: remove module variables and clear variable cache
+ */
+function image_select_captcha_uninstall() {
+  db_query("DELETE FROM {variable} WHERE name LIKE 'image_select_captcha_%'");
+  cache_clear_all('variables', 'cache');
+}

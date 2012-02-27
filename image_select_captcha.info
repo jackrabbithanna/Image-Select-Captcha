@@ -1,0 +1,13 @@
+; $Id: image_select_captcha.info,v 0.1 2012/2/22 13:41:02 markusa Exp $
+name = "Image Select CAPTCHA"
+description = "Provides an image and a list of words to match based CAPTCHA type."
+package = "Spam control"
+dependencies[] = captcha
+core = 6.x
+
+; Information added by drupal.org packaging script on 2009-09-04
+version = "6.x-0.1"
+core = "6.x"
+project = "CAPTCHA"
+datestamp = "1252092630"
+

@@ -1,0 +1,106 @@
+<?php
+// $Id: image_select_captcha.module,v 0.1 2012/02/26 17:32:28 markus Exp $
+
+/**
+ * Implementation of hook_help().
+ */
+function image_select_captcha_help($path, $arg) {
+  switch ($path) {
+    case 'admin/user/captcha/image_select_captcha':
+      $output = '<p>'. t('The Image Select CAPTCHA allows users to select a name to fit an image.') .'</p>';
+      $captcha = image_select_captcha_captcha('generate', 'Image Select CAPTCHA');
+      $output .= $captcha['form']['image_select']['#value'];
+      return $output;
+  }
+}
+
+/**
+ * Implementation of hook_menu().
+ */
+function image_select_captcha_menu() {
+  $items = array();
+  $items['admin/user/captcha/image_select_captcha'] = array(
+    'title' => 'Image Select CAPTCHA',
+    'file' => 'image_select_captcha.admin.inc',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('image_select_captcha_settings_form'),
+    'access arguments' => array('administer CAPTCHA settings'),
+    'type' => MENU_LOCAL_TASK,
+  );
+  return $items;
+}
+
+/**
+ * helper function for generating a code, taking the allowed characters into account
+ */
+function _image_select_captcha_get_allowed_characters() {
+  
+}
+
+/**
+ * Implementation of hook_captcha
+ */
+function image_select_captcha_captcha($op, $captcha_type='', $response='') {
+  switch ($op) {
+    case 'list':
+      return array('Image Select CAPTCHA');
+    case 'generate':
+      if ($captcha_type == "Image Select CAPTCHA") {
+        // get settings
+        //$allowed_chars = _image_select_captcha_get_allowed_characters();
+				
+				$image_words = array(1 => t('Butterfly'), 2 => t('Fox'), 3 => t('Whale'), 4 =>t('Bear'),5 =>t('Monkey'),6 =>t('Fish'));
+				$imagedirectory = variable_get('image_select_captcha_image_location','images');
+				//$image_count = variable_get('image_select_captcha_image_number',2);
+				
+        $image_chosen = array_rand($image_words);
+       
+			 
+			 // build solution and Image Select array
+        $solution = $image_chosen;
+        
+				switch($image_chosen){
+				  case 1: 
+					  $imagename = '/butterfly.jpg';
+				    break;
+					case 2:
+				    $imagename = '/fox.jpg';
+						break;
+					case 3:
+					  $imagename = '/whale.jpg';
+						break;
+					case 4:
+					  $imagename = '/bear.jpg';
+						break;
+					case 5:
+					  $imagename = '/monkey.jpg';
+						break;
+					case 6:
+					  $imagename = '/fish.jpg';
+						break;
+				
+				}
+				
+        // build CAPTCHA array
+        $captcha = array();
+        $captcha['solution'] = $solution;
+        
+				
+				
+        
+				$captcha['form']['images'] = array(
+          '#type' => 'markup',
+          '#value' => '<img src="'.file_create_url('sites/default/files/'.$imagedirectory.$imagename).'" />',
+        );
+        $captcha['form']['captcha_response'] = array(
+          '#type' => 'select',
+          '#title' => t('Select a word'),
+          '#options' => $image_words,
+    			'#required' => TRUE,
+          '#description' => t('Please choose the word which most closely matches the image above.')
+        );
+        return $captcha;
+      }
+    break;
+  }
+}
